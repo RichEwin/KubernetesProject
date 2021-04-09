@@ -1,0 +1,38 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: video-blog
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: video-blog
+  template:
+    metadata:
+      labels:
+        app: video-blog
+    spec:
+      containers:
+        - name: video-blog
+          image: 147415201944.dkr.ecr.eu-west-2.amazonaws.com/video-blog:latest
+          securityContext:
+            readOnlyRootFilesystem: false
+          imagePullPolicy: Always
+          
+          ports:
+            - containerPort: 3000
+      restartPolicy: Always
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: video-blog
+spec:
+  type: NodePort
+  ports:
+    - port: 3000
+      targetPort: 3000
+      protocol: TCP
+      name: video-blog
+  selector:
+    app: video-blog
